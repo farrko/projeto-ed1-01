@@ -18,7 +18,10 @@ struct llist_t {
 
 node_t *node_init(void *value, void (*destructor)(void *)) {
   node_t *node = malloc(sizeof(node_t));
-  if (node == NULL) return NULL;
+  if (node == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
 
   node->value = value;
   node->destructor = destructor;
