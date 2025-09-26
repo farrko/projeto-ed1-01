@@ -7,7 +7,7 @@
 struct text_t {
   size_t id;
   double x, y;
-  char anchor;
+  char *anchor;
   char *color;
   char *border_color;
   char *ffam;
@@ -16,7 +16,7 @@ struct text_t {
   char *content;
 };
 
-text_t *text_init(size_t id, double x, double y, char anchor, char *color, char *border_color, char *ffam, char *fweight, char *fsize, char *content) {
+text_t *text_init(size_t id, double x, double y, char *anchor, char *color, char *border_color, char *ffam, char *fweight, char *fsize, char *content) {
   text_t *text = malloc(sizeof(text_t));
   if (text == NULL) {
     printf("Erro na alocação de memória.\n");
@@ -39,7 +39,8 @@ text_t *text_init(size_t id, double x, double y, char anchor, char *color, char 
 
 void text_destroy(void *text) {
   text_t *t = (text_t *) text;
-  
+
+  if (t->anchor != NULL) free(t->anchor);
   if (t->color != NULL) free(t->color);
   if (t->border_color != NULL) free(t->border_color);
   if (t->ffam != NULL) free(t->ffam);
@@ -58,7 +59,7 @@ void text_set_y(text_t *text, double y) {
   text->y = y;
 }
 
-void text_set_anchor(text_t *text, char anchor) {
+void text_set_anchor(text_t *text, char *anchor) {
   text->anchor = anchor;
 }
 
@@ -104,7 +105,7 @@ double text_get_y(text_t *text) {
   return text->y;
 }
 
-char text_get_anchor(text_t *text) {
+char *text_get_anchor(text_t *text) {
   return text->anchor;
 }
 

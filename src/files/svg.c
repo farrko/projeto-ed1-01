@@ -1,0 +1,53 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "svg.h"
+
+struct svg_t {
+  FILE *svgfile;
+};
+
+svg_t *svg_init(char *path) {
+  svg_t *svg = malloc(sizeof(svg_t));
+  if (svg == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
+
+  FILE *file = fopen(path, "w");
+  if (file == NULL) {
+    printf("Erro na criação do arquivo SVG.\n");
+    exit(1);
+  }
+
+  fprintf(file, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n");
+
+  svg->svgfile = file;
+  return svg;
+}
+
+void svg_close(svg_t *svg) {
+  FILE *file = svg->svgfile;
+
+  fprintf(file, "</svg>\n");
+  fclose(file);
+  free(svg);
+}
+
+void svg_write_circle(svg_t *svg, circle_t *circle) {
+  fprintf(svg->svgfile, "<circle cx=\"%f\" cy=\"%f\" r=\"%f\" fill=\"%s\" stroke=\"%s\" />\n", circle_get_x(circle), circle_get_y(circle), circle_get_radius(circle), circle_get_color(circle), circle_get_border_color(circle));
+}
+
+void svg_write_rectangle(svg_t *svg, rectangle_t *rect) {
+  fprintf(svg->svgfile, "<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" fill=\"%s\" stroke=\"%s\" />\n", rect_get_x(rect), rect_get_y(rect), rect_get_width(rect), rect_get_height(rect), rect_get_color(rect), rect_get_border_color(rect));
+}
+
+void svg_write_line(svg_t *svg, line_t *line) {
+  fprintf(svg->svgfile, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" fill=\"%s\" />\n", line_get_x1(line), line_get_y1(line), line_get_x2(line), line_get_y2(line), line_get_color(line));
+}
+
+void svg_write_text(svg_t *svg, text_t *text) {
+  fprintf(svg->svgfile, "<text x=\"%f\" y=\"%f\" text-anchor=\"%s\" fill=\"%s\" stroke=\"%s\" font-family=\"%s\" font-weight=\"%s\" font-size=\"%s\">\n", text_get_x(text), text_get_y(text), text_get_anchor(text), text_get_color(text), text_get_border_color(text), text_get_ffam(text), text_get_fweight(text), text_get_fsize(text));
+  fprintf(svg->svgfile, "%s\n", text_get_content(text));
+  fprintf(svg->svgfile, "</text>\n");
+}
