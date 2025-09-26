@@ -90,15 +90,6 @@ node_t *llist_getat_index(llist_t *llist, size_t index) {
   return current;
 }
 
-node_t *llist_getat_start(llist_t *llist) {
-  return llist_getat_index(llist, 0);
-}
-
-node_t *llist_getat_end(llist_t *llist) {
-  if (!llist->length) return NULL;
-
-  return llist_getat_index(llist, llist->length - 1);
-}
 node_t *llist_popat_index(llist_t *llist, size_t index) {
   if (index >= llist->length) return NULL;
 

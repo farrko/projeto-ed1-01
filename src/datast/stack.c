@@ -19,7 +19,7 @@ stack_t *stack_init() {
 }
 
 node_t *stack_peek(stack_t *stack) {
-  return llist_getat_end(stack->ll);
+  return llist_get_tail(stack->ll);
 }
 
 node_t *stack_pop(stack_t *stack) {

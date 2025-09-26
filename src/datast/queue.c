@@ -19,7 +19,7 @@ queue_t *queue_init() {
 }
 
 node_t *queue_peek(queue_t *queue) {
-  return llist_getat_start(queue->ll);
+  return llist_get_head(queue->ll);
 }
 
 node_t *queue_dequeue(queue_t *queue) {
