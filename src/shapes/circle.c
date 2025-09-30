@@ -59,6 +59,10 @@ void circle_set_border_color(circle_t *circle, char *border_color) {
   circle->border_color = border_color;
 }
 
+size_t circle_get_id(circle_t *circle) {
+  return circle->id;
+}
+
 double circle_get_x(circle_t *circle) {
   return circle->x;
 }

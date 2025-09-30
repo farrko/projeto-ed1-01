@@ -42,6 +42,10 @@ void shape_destroy(void *shape) {
   free(shape);
 }
 
+E_SHAPETYPE shape_get_type(shape_t *shape) {
+  return shape->shapetype;
+}
+
 circle_t *shape_as_circle(shape_t *shape) {
   return (circle_t *) shape->shape;
 }
