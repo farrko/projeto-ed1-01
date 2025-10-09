@@ -30,6 +30,7 @@ circle_t *circle_init(size_t id, double x, double y, double radius, char *color,
 }
 
 void circle_destroy(void *circle) {
+  if (circle == NULL) return;
   circle_t *c = (circle_t *) circle;
 
   if (c->color != NULL) free(c->color);
@@ -39,51 +40,63 @@ void circle_destroy(void *circle) {
 }
 
 void circle_set_x(circle_t *circle, double x) {
+  if (circle == NULL) return;
   circle->x = x;
 }
 
 void circle_set_y(circle_t *circle, double y) {
+  if (circle == NULL) return;
   circle->y = y;
 }
 
 void circle_set_radius(circle_t *circle, double radius) {
+  if (circle == NULL) return;
   circle->radius = radius;
 }
 
 void circle_set_color(circle_t *circle, char *color) {
+  if (circle == NULL) return;
   if (circle->color != NULL) free(circle->color);
   circle->color = color;
 }
 void circle_set_border_color(circle_t *circle, char *border_color) {
+  if (circle == NULL) return;
   if (circle->border_color != NULL) free(circle->border_color);
   circle->border_color = border_color;
 }
 
 size_t circle_get_id(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->id;
 }
 
 double circle_get_x(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->x;
 }
 
 double circle_get_y(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->y;
 }
 
 double circle_get_radius(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->radius;
 }
 
 char *circle_get_color(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->color;
 }
 
 char *circle_get_border_color(circle_t *circle) {
+  if (circle == NULL) return 0;
   return circle->border_color;
 }
 
 double circle_get_area(circle_t *circle) {
+  if (circle == NULL) return 0;
   return pow(circle->radius, 2) * 3.1415;
 }
 

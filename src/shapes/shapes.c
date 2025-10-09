@@ -43,25 +43,31 @@ void shape_destroy(void *shape) {
 }
 
 E_SHAPETYPE shape_get_type(shape_t *shape) {
+  if (shape == NULL) return -1;
   return shape->shapetype;
 }
 
 circle_t *shape_as_circle(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (circle_t *) shape->shape;
 }
 
 rectangle_t *shape_as_rectangle(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (rectangle_t *) shape->shape;
 }
 
 line_t *shape_as_line(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (line_t *) shape->shape;
 }
 
 text_t *shape_as_text(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (text_t *) shape->shape;
 }
 
 node_t *shape_as_node(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return node_init(shape, shape_destroy);
 }

@@ -55,6 +55,8 @@ llist_t *llist_init() {
 }
 
 void llist_destroy(llist_t *llist) {
+  if (llist == NULL) return;
+
   node_t *current = llist->head;
   for (size_t i = 0; i < llist->length; i++) {
     node_t *next = current->next;
@@ -68,18 +70,22 @@ void llist_destroy(llist_t *llist) {
 }
 
 node_t *llist_get_head(llist_t *llist) {
+  if (llist == NULL) return NULL;
   return llist->head;
 }
 
 node_t *llist_get_tail(llist_t *llist) {
+  if (llist == NULL) return NULL;
   return llist->tail;
 }
 
 size_t llist_get_length(llist_t *llist) {
+  if (llist == NULL) return NULL;
   return llist->length;
 }
 
 node_t *llist_getat_index(llist_t *llist, size_t index) {
+  if (llist == NULL) return NULL;
   if (index >= llist->length) return NULL;
 
   node_t *current = llist->head;
@@ -91,6 +97,7 @@ node_t *llist_getat_index(llist_t *llist, size_t index) {
 }
 
 node_t *llist_popat_index(llist_t *llist, size_t index) {
+  if (llist == NULL) return NULL;
   if (index >= llist->length) return NULL;
 
   if (llist->length == 1) {
@@ -141,16 +148,19 @@ node_t *llist_popat_index(llist_t *llist, size_t index) {
 }
 
 node_t *llist_popat_start(llist_t *llist) {
+  if (llist == NULL) return NULL;
   return llist_popat_index(llist, 0);
 }
 
 node_t *llist_popat_end(llist_t *llist) {
+  if (llist == NULL) return NULL;
   if (!llist->length) return NULL;
 
   return llist_popat_index(llist, llist->length - 1);
 }
 
 void llist_insertat_index(llist_t *llist, node_t *node, size_t index) {
+  if (llist == NULL) return;
   if (index > llist->length) return;
 
   node->next = NULL;
@@ -203,14 +213,18 @@ void llist_insertat_index(llist_t *llist, node_t *node, size_t index) {
 }
 
 void llist_insertat_start(llist_t *llist, node_t *node) {
+  if (llist == NULL) return;
   llist_insertat_index(llist, node, 0);
 }
 
 void llist_insertat_end(llist_t *llist, node_t *node) {
+  if (llist == NULL) return;
   llist_insertat_index(llist, node, llist->length);
 }
 
 void llist_destroyat(llist_t *llist, size_t index) {
+  if (llist == NULL) return;
+
   node_t *node = llist_popat_index(llist, index);
   if (node == NULL)
     return;

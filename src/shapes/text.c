@@ -38,6 +38,7 @@ text_t *text_init(size_t id, double x, double y, char *anchor, char *color, char
 }
 
 void text_destroy(void *text) {
+  if (text == NULL) return;
   text_t *t = (text_t *) text;
 
   if (t->anchor != NULL) free(t->anchor);
@@ -52,88 +53,108 @@ void text_destroy(void *text) {
 }
 
 void text_set_x(text_t *text, double x) {
+  if (text == NULL) return;
   text->x = x;
 }
 
 void text_set_y(text_t *text, double y) {
+  if (text == NULL) return;
   text->y = y;
 }
 
 void text_set_anchor(text_t *text, char *anchor) {
+  if (text == NULL) return;
   text->anchor = anchor;
 }
 
 void text_set_color(text_t *text, char *color) {
+  if (text == NULL) return;
   if (text->color != NULL) free(text->color);
   text->color = color;
 }
 
 void text_set_border_color(text_t *text, char *border_color) {
+  if (text == NULL) return;
   if (text->border_color != NULL) free(text->border_color);
   text->border_color = border_color;
 }
 
 void text_set_ffam(text_t *text, char *ffam) {
+  if (text == NULL) return;
   if (text->ffam != NULL) free(text->ffam);
   text->ffam = ffam;
 }
 
 void text_set_fweight(text_t *text, char *fweight) {
+  if (text == NULL) return;
   if (text->fweight != NULL) free(text->fweight);
   text->fweight = fweight;
 }
 
 void text_set_fsize(text_t *text, char *fsize) {
+  if (text == NULL) return;
   if (text->fsize != NULL) free(text->fsize);
   text->fsize = fsize;
 }
 
 void text_set_content(text_t *text, char *content) {
+  if (text == NULL) return;
   if (text->content != NULL) free(text->content);
   text->content = content;
 }
 
 size_t text_get_id(text_t *text) {
+  if (text == NULL) return 0;
   return text->id;
 }
 
 double text_get_x(text_t *text) {
+  if (text == NULL) return 0;
   return text->x;
 }
 
 double text_get_y(text_t *text) {
+  if (text == NULL) return 0;
   return text->y;
 }
 
 char *text_get_anchor(text_t *text) {
+  if (text == NULL) return NULL;
   return text->anchor;
 }
 
 char *text_get_color(text_t *text) {
+  if (text == NULL) return NULL;
   return text->color;
 }
 
 char *text_get_border_color(text_t *text) {
+  if (text == NULL) return NULL;
   return text->border_color;
 }
 
 char *text_get_ffam(text_t *text) {
+  if (text == NULL) return NULL;
   return text->ffam;
 }
 
 char *text_get_fweight(text_t *text) {
+  if (text == NULL) return NULL;
   return text->fweight;
 }
 
 char *text_get_fsize(text_t *text) {
+  if (text == NULL) return NULL;
   return text->fsize;
 }
 
 char *text_get_content(text_t *text) {
+  if (text == NULL) return NULL;
   return text->content;
 }
 
 double text_get_area(text_t *text) {
+  if (text == NULL) return 0;
   size_t len = strlen(text->content);
   return 20.0 * len;
 }
