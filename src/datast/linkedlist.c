@@ -80,7 +80,7 @@ node_t *llist_get_tail(llist_t *llist) {
 }
 
 size_t llist_get_length(llist_t *llist) {
-  if (llist == NULL) return NULL;
+  if (llist == NULL) return 0;
   return llist->length;
 }
 
