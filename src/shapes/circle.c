@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 #include "circle.h"
@@ -59,6 +60,7 @@ void circle_set_color(circle_t *circle, char *color) {
   if (circle->color != NULL) free(circle->color);
   circle->color = color;
 }
+
 void circle_set_border_color(circle_t *circle, char *border_color) {
   if (circle == NULL) return;
   if (circle->border_color != NULL) free(circle->border_color);
@@ -100,3 +102,29 @@ double circle_get_area(circle_t *circle) {
   return pow(circle->radius, 2) * 3.1415;
 }
 
+circle_t *circle_clone(circle_t *circle, size_t id) {
+  char *color = malloc(8);
+  if (color == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
+
+  char *border_color = malloc(8);
+  if (border_color == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
+
+  strcpy(color, circle->color);
+  strcpy(border_color, circle->border_color);
+
+  return circle_init(id, circle->x, circle->y, circle->radius, color, border_color);
+}
+
+void circle_swap_colors(circle_t *circle) {
+  char *color = circle->color;
+  char *border_color = circle->border_color;
+
+  circle->color = border_color;
+  circle->border_color = color;
+}

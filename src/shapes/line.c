@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 #include "line.h"
 
@@ -101,4 +102,16 @@ double line_get_area(line_t *line) {
   double y2 = line->y2;
 
   return 2 * (sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)));
+}
+
+line_t *line_clone(line_t *line, size_t id) {
+  char *color = malloc(8);
+  if (color == NULL) {
+      printf("Erro na alocação de memória.\n");
+      exit(1);
+  }
+
+  strcpy(color, line->color);
+
+  return line_init(id, line->x1, line->y1, line->x2, line->y2, color);
 }

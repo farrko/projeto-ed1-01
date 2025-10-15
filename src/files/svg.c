@@ -38,22 +38,22 @@ void svg_close(svg_t *svg) {
 
 void svg_write_circle(svg_t *svg, circle_t *circle) {
   if (svg == NULL || circle == NULL) return;
-  fprintf(svg->svgfile, "<circle cx=\"%f\" cy=\"%f\" r=\"%f\" fill=\"%s\" stroke=\"%s\" />\n", circle_get_x(circle), circle_get_y(circle), circle_get_radius(circle), circle_get_color(circle), circle_get_border_color(circle));
+  fprintf(svg->svgfile, "<circle id=\"%zu\" cx=\"%f\" cy=\"%f\" r=\"%f\" fill=\"%s\" stroke=\"%s\" fill-opacity=\"0.5\" />\n", circle_get_id(circle), circle_get_x(circle), circle_get_y(circle), circle_get_radius(circle), circle_get_color(circle), circle_get_border_color(circle));
 }
 
 void svg_write_rectangle(svg_t *svg, rectangle_t *rect) {
   if (svg == NULL || rect == NULL) return;
-  fprintf(svg->svgfile, "<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" fill=\"%s\" stroke=\"%s\" />\n", rect_get_x(rect), rect_get_y(rect), rect_get_width(rect), rect_get_height(rect), rect_get_color(rect), rect_get_border_color(rect));
+  fprintf(svg->svgfile, "<rect id=\"%zu\" x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" fill=\"%s\" stroke=\"%s\" fill-opacity=\"0.5\" />\n", rect_get_id(rect), rect_get_x(rect), rect_get_y(rect), rect_get_width(rect), rect_get_height(rect), rect_get_color(rect), rect_get_border_color(rect));
 }
 
 void svg_write_line(svg_t *svg, line_t *line) {
   if (svg == NULL || line == NULL) return;
-  fprintf(svg->svgfile, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" fill=\"%s\" />\n", line_get_x1(line), line_get_y1(line), line_get_x2(line), line_get_y2(line), line_get_color(line));
+  fprintf(svg->svgfile, "<line id=\"%zu\" x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" fill=\"%s\" fill-opacity=\"0.5\" />\n", line_get_id(line), line_get_x1(line), line_get_y1(line), line_get_x2(line), line_get_y2(line), line_get_color(line));
 }
 
 void svg_write_text(svg_t *svg, text_t *text) {
   if (svg == NULL || text == NULL) return;
-  fprintf(svg->svgfile, "<text x=\"%f\" y=\"%f\" text-anchor=\"%s\" fill=\"%s\" stroke=\"%s\" font-family=\"%s\" font-weight=\"%s\" font-size=\"%s\">\n", text_get_x(text), text_get_y(text), text_get_anchor(text), text_get_color(text), text_get_border_color(text), text_get_ffam(text), text_get_fweight(text), text_get_fsize(text));
+  fprintf(svg->svgfile, "<text id=\"%zu\" x=\"%f\" y=\"%f\" text-anchor=\"%s\" fill=\"%s\" stroke=\"%s\" font-family=\"%s\" font-weight=\"%s\" font-size=\"%s\" fill-opacity=\"0.5\">\n", text_get_id(text), text_get_x(text), text_get_y(text), text_get_anchor(text), text_get_color(text), text_get_border_color(text), text_get_ffam(text), text_get_fweight(text), text_get_fsize(text));
   fprintf(svg->svgfile, "%s\n", text_get_content(text));
   fprintf(svg->svgfile, "</text>\n");
 }

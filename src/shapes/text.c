@@ -158,3 +158,61 @@ double text_get_area(text_t *text) {
   size_t len = strlen(text->content);
   return 20.0 * len;
 }
+
+text_t *text_clone(text_t *text, size_t id) {
+  char *anchor = malloc(strlen(text->anchor) + 1);
+  char *color = malloc(8);
+  char *border_color = malloc(8);
+  char *ffam = malloc(strlen(text->ffam) + 1);
+  char *fweight = malloc(strlen(text->fweight) + 1);
+  char *fsize = malloc(strlen(text->fsize) + 1);
+  char *content = malloc(128);
+
+  if (!anchor || !color || !border_color || !ffam || !fweight || !fsize || !content) {
+      printf("Erro na alocação de memória.\n");
+      exit(1);
+  }
+
+  strcpy(anchor, text->anchor);
+  strcpy(color, text->color);
+  strcpy(border_color, text->border_color);
+  strcpy(ffam, text->ffam);
+  strcpy(fweight, text->fweight);
+  strcpy(fsize, text->fsize);
+  strcpy(content, text->content);
+
+  return text_init(id, text->x, text->y, anchor, color, border_color, ffam, fweight, fsize, content);
+}
+
+line_t *text_line_collision(text_t *text) {
+  size_t len = strlen(text->content);
+  size_t cl = 10 * len;
+
+  double x1, x2; 
+
+  if (strcmp(text->anchor, "start") == 0) {
+    x1 = text->x;
+    x2 = x1 + cl;
+  }
+
+  if (strcmp(text->anchor, "middle") == 0) {
+    x1 = text->x - (cl / 2.0);
+    x2 = text->x + (cl / 2.0);
+  }
+
+  if (strcmp(text->anchor, "end") == 0) {
+    x1 = text->x - cl;
+    x2 = text->x;
+  }
+
+  line_t *line = line_init(0, x1, text->y, x2, text->y, NULL);
+  return line;
+}
+
+void text_swap_colors(text_t *text) {
+  char *color = text->color;
+  char *border_color = text->border_color;
+
+  text->color = border_color;
+  text->border_color = color;
+}

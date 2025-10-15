@@ -2,6 +2,7 @@
 #define TEXT_H
 
 #include <stddef.h>
+#include "line.h"
 
 typedef struct text_t text_t;
 
@@ -179,5 +180,11 @@ char *text_get_content(text_t *text);
   * @return   A área do texto.
   */
 double text_get_area(text_t *text);
+
+text_t *text_clone(text_t *text, size_t id);
+
+line_t *text_line_collision(text_t *text);
+
+void text_swap_colors(text_t *text);
 
 #endif

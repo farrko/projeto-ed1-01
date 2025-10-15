@@ -119,4 +119,6 @@ char *line_get_color(line_t *line);
   */
 double line_get_area(line_t *line);
 
+line_t *line_clone(line_t *line, size_t id);
+
 #endif

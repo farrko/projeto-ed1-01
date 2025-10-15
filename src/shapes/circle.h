@@ -116,4 +116,8 @@ char *circle_get_border_color(circle_t *circle);
   */
 double circle_get_area(circle_t *circle);
 
+circle_t *circle_clone(circle_t *circle, size_t id);
+
+void circle_swap_colors(circle_t *circle);
+
 #endif

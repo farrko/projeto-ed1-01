@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "rectangle.h"
 
@@ -111,3 +112,29 @@ double rect_get_area(rectangle_t *rect) {
   return rect->width * rect->height;
 }
 
+rectangle_t *rect_clone(rectangle_t *rect, size_t id) {
+  char *color = malloc(8);
+  if (color == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
+
+  char *border_color = malloc(8);
+  if (border_color == NULL) {
+    printf("Erro na alocação de memória.\n");
+    exit(1);
+  }
+
+  strcpy(color, rect->color);
+  strcpy(border_color, rect->border_color);
+
+  return rect_init(id, rect->x, rect->y, rect->width, rect->height, color, border_color);
+}
+
+void rect_swap_colors(rectangle_t *rect) {
+  char *color = rect->color;
+  char *border_color = rect->border_color;
+
+  rect->color = border_color;
+  rect->border_color = color;
+} 

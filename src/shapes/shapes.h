@@ -1,6 +1,8 @@
 #ifndef SHAPES_H
 #define SHAPES_H
 
+#include <stdbool.h>
+
 #include "circle.h"
 #include "rectangle.h"
 #include "line.h"
@@ -78,5 +80,23 @@ text_t *shape_as_text(shape_t *shape);
   * @return   Uma instância de node.
   */
 node_t *shape_as_node(shape_t *shape);
+
+size_t shape_get_id(shape_t *shape);
+double shape_get_x(shape_t *shape);
+double shape_get_y(shape_t *shape);
+void shape_set_x(shape_t *shape);
+void shape_set_y(shape_t *shape);
+char *shape_get_color(shape_t *shape);
+char *shape_get_border_color(shape_t *shape);
+
+void shape_move(shape_t *shape, double lx, double ly, double dx, double dy);
+
+double shape_get_area(shape_t *shape);
+
+shape_t *shape_clone(shape_t *shape, size_t id);
+
+void shape_swap_colors(shape_t *shape);
+
+bool shape_overlap(shape_t *i, shape_t *j);
 
 #endif

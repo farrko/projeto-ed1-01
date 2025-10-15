@@ -131,4 +131,8 @@ char *rect_get_border_color(rectangle_t *rect);
   */
 double rect_get_area(rectangle_t *rect);
 
+rectangle_t *rect_clone(rectangle_t *rect, size_t id);
+
+void rect_swap_colors(rectangle_t *rect);
+
 #endif

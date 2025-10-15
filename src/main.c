@@ -4,31 +4,66 @@
 #include "datast/linkedlist.h"
 #include "datast/queue.h"
 #include "files/geo.h"
-#include "shapes/rectangle.h"
 #include "shapes/shapes.h"
+#include "files/svg.h"
+#include "files/qry.h"
 
 int main() {
-  queue_t *arena = queue_init();
+  queue_t *ground = queue_init();
 
-  geo_processing("./retg-decres.geo", arena);
+  size_t highest_id = geo_processing("./t-2figs-alet.geo", ground);
+  svg_t *preqry_svg = svg_init("./pre-qry.svg");
 
-  size_t len = queue_get_length(arena);
-  for (size_t i = 0; i < len; i++) {
-    node_t *current = queue_dequeue(arena);
-    rectangle_t *rect = shape_as_rectangle((shape_t *) node_getvalue(current));
+  for (size_t i = 0; i < queue_get_length(ground); i++) {
+    node_t *current = queue_dequeue(ground);
+    shape_t *shape = (shape_t *) node_getvalue(current);
 
-    printf("- Forma %zu\n", i + 1);
-    printf("\tid: %zu\n", rect_get_id(rect));
-    printf("\tx: %lf\n", rect_get_x(rect));
-    printf("\ty: %lf\n", rect_get_y(rect));
-    printf("\twidth: %lf\n", rect_get_width(rect));
-    printf("\theight: %lf\n", rect_get_height(rect));
-    printf("\tcolor: %s\n", rect_get_color(rect));
-    printf("\tborder-color: %s\n", rect_get_border_color(rect));
-    printf("\n");
+    switch (shape_get_type(shape)) {
+      case CIRCLE:
+        svg_write_circle(preqry_svg, shape_as_circle(shape));
+        break;
+      case RECTANGLE:
+        svg_write_rectangle(preqry_svg, shape_as_rectangle(shape));
+        break;
+      case LINE:
+        svg_write_line(preqry_svg, shape_as_line(shape));
+        break;
+      case TEXT:
+        svg_write_text(preqry_svg, shape_as_text(shape));
+        break;
+    }
 
-    node_destroy(current);
+    queue_enqueue(ground, current);
   }
+  svg_close(preqry_svg);
 
-  queue_destroy(arena);
+  qry_processing("./d2-1x1-norte.qry", "test.txt", ground, highest_id);
+
+  svg_t *postqry_svg = svg_init("./post-qry.svg");
+
+  for (size_t i = 0; i < queue_get_length(ground); i++) {
+    node_t *current = queue_dequeue(ground);
+    shape_t *shape = (shape_t *) node_getvalue(current);
+
+    switch (shape_get_type(shape)) {
+      case CIRCLE:
+        svg_write_circle(postqry_svg, shape_as_circle(shape));
+        break;
+      case RECTANGLE:
+        svg_write_rectangle(postqry_svg, shape_as_rectangle(shape));
+        break;
+      case LINE:
+        svg_write_line(postqry_svg, shape_as_line(shape));
+        break;
+      case TEXT:
+        printf("adicionado texto\n");
+        svg_write_text(postqry_svg, shape_as_text(shape));
+        break;
+    }
+
+    queue_enqueue(ground, current);
+  }
+  svg_close(postqry_svg);
+
+  queue_destroy(ground);
 }
