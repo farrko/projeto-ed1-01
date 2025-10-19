@@ -27,6 +27,7 @@ shape_t *shape_init(E_SHAPETYPE type, void *shape) {
 }
 
 void shape_destroy(void *shape) {
+  if (shape == NULL) return;
   shape_t *s = (shape_t *) shape;
 
    switch(s->shapetype) {
@@ -52,62 +53,101 @@ E_SHAPETYPE shape_get_type(shape_t *shape) {
 }
 
 circle_t *shape_as_circle(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (circle_t *) shape->shape;
 }
 
 rectangle_t *shape_as_rectangle(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (rectangle_t *) shape->shape;
 }
 
 line_t *shape_as_line(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (line_t *) shape->shape;
 }
 
 text_t *shape_as_text(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return (text_t *) shape->shape;
 }
 
 node_t *shape_as_node(shape_t *shape) {
+  if (shape == NULL) return NULL;
   return node_init(shape, shape_destroy);
 }
 
 size_t shape_get_id(shape_t *shape) {
+  if (shape == NULL) return 0;
+
   switch (shape->shapetype) {
-    case CIRCLE: return circle_get_id(shape_as_circle(shape));
-    case RECTANGLE: return rect_get_id(shape_as_rectangle(shape));
-    case LINE: return line_get_id(shape_as_line(shape));
-    case TEXT: return text_get_id(shape_as_text(shape));
+    case CIRCLE:
+      return circle_get_id(shape_as_circle(shape));
+    case RECTANGLE:
+      return rect_get_id(shape_as_rectangle(shape));
+    case LINE:
+      return line_get_id(shape_as_line(shape));
+    case TEXT:
+      return text_get_id(shape_as_text(shape));
+    default:
+      return 0;
   }
 }
 
 double shape_get_x(shape_t *shape) {
+  if (shape == NULL) return 0;
+
   switch (shape->shapetype) {
-    case CIRCLE:    return circle_get_x(shape_as_circle(shape));
-    case RECTANGLE: return rect_get_x(shape_as_rectangle(shape));
-    case LINE:      return line_get_x1(shape_as_line(shape));
-    case TEXT:      return text_get_x(shape_as_text(shape));
+    case CIRCLE:
+      return circle_get_x(shape_as_circle(shape));
+    case RECTANGLE:
+      return rect_get_x(shape_as_rectangle(shape));
+    case LINE:
+      return line_get_x1(shape_as_line(shape));
+    case TEXT:
+      return text_get_x(shape_as_text(shape));
+    default:
+      return 0;
   }
 }
 
 double shape_get_y(shape_t *shape) {
+  if (shape == NULL) return 0;
+
   switch (shape->shapetype) {
-    case CIRCLE:    return circle_get_y(shape_as_circle(shape));
-    case RECTANGLE: return rect_get_y(shape_as_rectangle(shape));
-    case LINE:      return line_get_y1(shape_as_line(shape));
-    case TEXT:      return text_get_y(shape_as_text(shape));
+    case CIRCLE:
+      return circle_get_y(shape_as_circle(shape));
+    case RECTANGLE:
+      return rect_get_y(shape_as_rectangle(shape));
+    case LINE:
+      return line_get_y1(shape_as_line(shape));
+    case TEXT:
+      return text_get_y(shape_as_text(shape));
+    default:
+      return 0;
   }
 }
 
 char *shape_get_color(shape_t *shape) {
+  if (shape == NULL) return 0;
+
   switch (shape->shapetype) {
-    case CIRCLE:    return circle_get_color(shape_as_circle(shape));
-    case RECTANGLE: return rect_get_color(shape_as_rectangle(shape));
-    case LINE:      return line_get_color(shape_as_line(shape));
-    case TEXT:      return text_get_color(shape_as_text(shape));
+    case CIRCLE: 
+      return circle_get_color(shape_as_circle(shape));
+    case RECTANGLE:
+      return rect_get_color(shape_as_rectangle(shape));
+    case LINE:
+      return line_get_color(shape_as_line(shape));
+    case TEXT:
+      return text_get_color(shape_as_text(shape));
+    default:
+      return NULL;
   }
 }
 
 void shape_move(shape_t *shape, double lx, double ly, double dx, double dy) {
+  if (shape == NULL) return;
+
   switch (shape_get_type(shape)) {
     case CIRCLE: {
       circle_t *circle = shape_as_circle(shape);
@@ -140,26 +180,63 @@ void shape_move(shape_t *shape, double lx, double ly, double dx, double dy) {
   }
 }
 
+void shape_set_border_color(shape_t *shape, char *border_color) { 
+  if (shape == NULL) return;
+
+  switch (shape->shapetype) {
+    case CIRCLE:
+      circle_set_border_color(shape_as_circle(shape), border_color);
+      break;
+    case RECTANGLE:
+      rect_set_border_color(shape_as_rectangle(shape), border_color);
+      break;
+    case TEXT:
+      text_set_border_color(shape_as_text(shape), border_color);
+      break;
+    case LINE:
+      line_set_color(shape_as_line(shape), border_color);
+      break;
+  }
+}
+
 double shape_get_area(shape_t *shape) {
+  if (shape == NULL) return 0;
+
   switch(shape->shapetype) {
-    case CIRCLE: return circle_get_area((circle_t *) shape->shape);
-    case RECTANGLE: return rect_get_area((rectangle_t *) shape->shape);
-    case LINE: return line_get_area((line_t *) shape->shape);
-    case TEXT: return text_get_area((text_t *) shape->shape);
+    case CIRCLE:
+      return circle_get_area((circle_t *) shape->shape);
+    case RECTANGLE:
+      return rect_get_area((rectangle_t *) shape->shape);
+    case LINE:
+      return line_get_area((line_t *) shape->shape);
+    case TEXT:
+      return text_get_area((text_t *) shape->shape);
+    default:
+      return 0.0;
   }
 }
 
 shape_t *shape_clone(shape_t *shape, size_t id) {
+  if (shape == NULL) return NULL;
+
   switch (shape->shapetype) {
-    case CIRCLE: return shape_init(CIRCLE, circle_clone(shape_as_circle(shape), id));
-    case RECTANGLE: return shape_init(RECTANGLE, rect_clone(shape_as_rectangle(shape), id));
-    case LINE: return shape_init(LINE, line_clone(shape_as_line(shape), id));
-    case TEXT: return shape_init(TEXT, text_clone(shape_as_text(shape), id));
+    case CIRCLE: 
+      return shape_init(CIRCLE, circle_clone(shape_as_circle(shape), id));
+    case RECTANGLE:
+      return shape_init(RECTANGLE, rect_clone(shape_as_rectangle(shape), id));
+    case LINE:
+      return shape_init(LINE, line_clone(shape_as_line(shape), id));
+    case TEXT:
+      return shape_init(TEXT, text_clone(shape_as_text(shape), id));
+    default: 
+      return NULL;
   }
 }
 
 // Auxiliar para calcular a cor complementar
 char *calc_complementary(char *color) {
+  if (color == NULL) return NULL;
+
   int r, g, b;
   sscanf(color, "#%2x%2x%2x", &r, &g, &b);
 
@@ -178,6 +255,8 @@ char *calc_complementary(char *color) {
 }
 
 void shape_swap_colors(shape_t *shape) {
+  if (shape == NULL) return;
+
   switch (shape->shapetype) {
     case CIRCLE: return circle_swap_colors(shape_as_circle(shape));
     case RECTANGLE: return rect_swap_colors(shape_as_rectangle(shape));
@@ -370,6 +449,8 @@ bool line_text_overlap(line_t *l, text_t *t) {
 }
 
 bool shape_overlap(shape_t *i, shape_t *j) {
+  if (i == NULL || j == NULL) return false;
+
   switch (i->shapetype) {
     case CIRCLE: {
       switch (j->shapetype) {
@@ -378,6 +459,7 @@ bool shape_overlap(shape_t *i, shape_t *j) {
         case LINE: return circle_line_overlap(shape_as_circle(i), shape_as_line(j));
         case TEXT: return circle_text_overlap(shape_as_circle(i), shape_as_text(j));
       }
+      break;
     }
     case RECTANGLE: {
       switch (j->shapetype) {
@@ -386,6 +468,7 @@ bool shape_overlap(shape_t *i, shape_t *j) {
         case LINE: return rect_line_overlap(shape_as_rectangle(i), shape_as_line(j));
         case TEXT: return rect_text_overlap(shape_as_rectangle(i), shape_as_text(j));
       }
+      break;
     }
     case LINE: {
       switch (j->shapetype) {
@@ -394,6 +477,7 @@ bool shape_overlap(shape_t *i, shape_t *j) {
         case LINE: return line_line_overlap(shape_as_line(i), shape_as_line(j));
         case TEXT: return line_text_overlap(shape_as_line(i), shape_as_text(j));
       }
+      break;
     }
     case TEXT: {
       switch (j->shapetype) {
@@ -402,6 +486,9 @@ bool shape_overlap(shape_t *i, shape_t *j) {
         case LINE: return line_text_overlap(shape_as_line(j), shape_as_text(i));
         case TEXT: return text_text_overlap(shape_as_text(i), shape_as_text(j));
       }
+      break;
     }
   }
+
+  return false;
 }

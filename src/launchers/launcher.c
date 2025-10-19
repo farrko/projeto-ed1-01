@@ -28,6 +28,13 @@ launcher_t *ln_init(size_t id, double x, double y) {
   return launcher;
 }
 
+void ln_destroy(void *launcher) {
+  launcher_t *l = (launcher_t *) launcher;
+
+  if (l->loaded != NULL) node_destroy(l->loaded);
+  free(launcher);
+}
+
 void ln_attach_loader(launcher_t *launcher, size_t side, loader_t *loader) {
   if (launcher == NULL || side >= 2) return;
 
@@ -41,13 +48,13 @@ void ln_shift_loaders(launcher_t *launcher, size_t side, size_t amount) {
 
   if (!side) {
     for (size_t i = 0; i < amount; i++) {
-      if (launcher->loaded != NULL) ld_push(launcher->rightl, launcher->loaded);
-      launcher->loaded = ld_pop(launcher->leftl);
+      if (launcher->loaded != NULL) ld_push(launcher->leftl, launcher->loaded);
+      launcher->loaded = ld_pop(launcher->rightl);
     }
   } else {
     for (size_t i = 0; i < amount; i++) {
-      if (launcher->loaded != NULL) ld_push(launcher->leftl, launcher->loaded); 
-      launcher->loaded = ld_pop(launcher->rightl);
+      if (launcher->loaded != NULL) ld_push(launcher->rightl, launcher->loaded); 
+      launcher->loaded = ld_pop(launcher->leftl);
     }
   }
 }

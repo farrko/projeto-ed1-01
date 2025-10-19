@@ -181,9 +181,29 @@ char *text_get_content(text_t *text);
   */
 double text_get_area(text_t *text);
 
+/** @brief    Cria uma cópia de um texto com um novo identificador.
+  *
+  * @param    text   Uma instância de texto a ser clonada.
+  * @param    id     Novo identificador para o texto clonado.
+  *
+  * @return   Uma nova instância de texto, idêntica à original, mas com o novo ID.
+  * @warning  Em caso de erro na alocação de memória, o programa será encerrado.
+  */
 text_t *text_clone(text_t *text, size_t id);
 
+/** @brief    Cria uma instância de linha para ser utilizada no cálculo de colisão do texto.
+  *
+  * @param    text  Uma instância de texto.
+  *
+  * @return   Uma instância de linha a ser utilizada para cálculo de colisão.
+  * @warning  Em caso de erro na alocação de memória, o programa será encerrado.
+  */
 line_t *text_line_collision(text_t *text);
+
+/** @brief    Troca entre si as cores de preenchimento e de borda de um texto.
+  *
+  * @param    rect   Uma instância de texto.
+  */
 
 void text_swap_colors(text_t *text);
 

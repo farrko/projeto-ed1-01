@@ -34,8 +34,6 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
   while(fgets(str, 256, qry)) {
     // Criação de disparador
     if (strncmp(str, "pd", 2) == 0) {
-      printf("pd\n");
-
       size_t id;
       double x, y;
 
@@ -43,15 +41,13 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
       fprintf(txt, "pd %zu %lf %lf\n", id, x, y);
 
       launcher_t *l = ln_init(id, x, y);
-      llist_insertat_end(launchers, node_init(l, free));
+      llist_insertat_end(launchers, node_init(l, ln_destroy));
 
       instructions++;
     }
 
     // Criação de carregador
     if (strncmp(str, "lc", 2) == 0) {
-      printf("lc\n");
-
       size_t id, amount;
 
       sscanf(str, "%*s %zu %zu", &id, &amount);
@@ -71,8 +67,6 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
 
     // Encaixar carregadores
     if (strncmp(str, "atch", 4) == 0) {
-      printf("atch\n");
-
       size_t launcher_id, leftl_id, rightl_id;
 
       sscanf(str, "%*s %zu %zu %zu", &launcher_id, &leftl_id, &rightl_id);
@@ -105,8 +99,6 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
 
     // Disparo
     if (strncmp(str, "dsp", 3) == 0) {
-      printf("dsp\n");
-
       size_t launcher_id;
       double dx, dy;
       char vi;
@@ -128,6 +120,16 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
 
       if (vi == 'v') {
         // todo: anotação de disparo.
+        char *color_x = malloc(8);
+        strcpy(color_x, "#FF0000");
+        line_t *line_x = line_init(0, lx, ly + dy, lx + dx, ly + dy, color_x);
+
+        char *color_y = malloc(8);
+        strcpy(color_y, "#FF0000");
+        line_t *line_y = line_init(0, lx + dx, ly, lx + dx, ly + dy, color_y);
+
+        queue_enqueue(extra_shapes, shape_as_node(shape_init(LINE, line_x)));
+        queue_enqueue(extra_shapes, shape_as_node(shape_init(LINE, line_y)));
       }
       
       shots++;
@@ -136,8 +138,6 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
 
     // Rajada
     if (strncmp(str, "rjd", 3) == 0) {
-      printf("rjd\n");
-
       size_t launcher_id;
       char side;
       double dx, dy, ix, iy;
@@ -149,44 +149,28 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
       loader_t *loader;
       size_t len;
 
-
       if (side == 'e') {
-        loader = ln_get_left_ld(launcher);
-        len = ld_get_length(loader);
-      } else {
         loader = ln_get_right_ld(launcher);
         len = ld_get_length(loader);
+      } else {
+        loader = ln_get_left_ld(launcher);
+        len = ld_get_length(loader);
       }
 
-      stack_t *s = stack_init();
       for (size_t i = 0; i < len; i++) {
-        stack_push(s, ld_pop(loader));
-      }
-
-      printf("loader len = %zu\n", len);
-
-      for (size_t i = 0; i < len; i++) {
-        //node_t *current = ld_pop(loader);
-        node_t *current = stack_pop(s);
+        node_t *current = ld_pop(loader);
         shape_t *shape = (shape_t *) node_getvalue(current);
-
-        printf("- id: %zu\n", shape_get_id(shape));
-        printf("dx = %lf\n", dx + (i * ix));
-        printf("dy = %lf\n", dy + (i * iy));
 
         shape_move(shape, ln_get_x(launcher), ln_get_y(launcher), dx + (i * ix), dy + (i * iy));
 
         queue_enqueue(arena, current);
         shots++;
       }
-
       instructions++;
     }
 
     // Calc
     if (strncmp(str, "calc", 4) == 0) {
-      printf("calc\n");
-
       double round_score = 0;
 
       while(queue_get_length(arena) >= 2) {
@@ -207,24 +191,29 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
 
           if (ai < aj) {
             // Caso: I < J
-            
+
             // Criação do asterisco pro SVG
             char *anchor = malloc(6);
-            strcpy(anchor, "start");
             char *color = malloc(8);
-            strcpy(color, "#ff0000");
             char *border_color = malloc(8);
-            strcpy(border_color, "#ff0000");
             char *content = malloc(2);
-            strcpy(content, "*");
             char *ffam = malloc(6);
-            strcpy(ffam, "serif");
             char *fweight = malloc(7);
-            strcpy(fweight, "normal");
             char *fsize = malloc(4);
+
+            if (!anchor || !color || !border_color || !content || !ffam || !fweight || !fsize) {
+              printf("Erro na alocação de memória.\n");
+              exit(1);
+            }
+
+            strcpy(anchor, "start");
+            strcpy(color, "#ff0000");
+            strcpy(border_color, "#ff0000");
+            strcpy(content, "*");
+            strcpy(ffam, "serif");
+            strcpy(fweight, "normal");
             strcpy(fsize, "2em");
 
-            printf("asterisco criado.\n");
             text_t *asterisk = text_init(0, shape_get_x(i), shape_get_y(i), anchor, color, border_color, ffam, fweight, fsize, content);
             queue_enqueue(extra_shapes, shape_as_node(shape_init(TEXT, asterisk)));
 
@@ -234,46 +223,22 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
             round_score += ai;
             smashed_shapes++;
             fprintf(txt, "I (id %zu) v J (id %zu) - Sobreposição - I < J\n", i_id, j_id);
-          } else if (ai > aj) {
-            // Caso: I > J
+          } else if (ai >= aj) {
+            // Caso: I >= J
             char *icolor = malloc(8);
             if (icolor == NULL) {
               printf("Erro na alocação de memória.\n");
               exit(1);
             }
 
-            switch (shape_get_type(i)) {
-              case CIRCLE: 
-                strcpy(icolor, circle_get_color(shape_as_circle(i)));
-                break;
-              case RECTANGLE:
-                strcpy(icolor, rect_get_color(shape_as_rectangle(i)));
-                break;
-              case LINE:
-                strcpy(icolor, line_get_color(shape_as_line(i)));
-                break;
-              case TEXT:
-                strcpy(icolor, text_get_color(shape_as_text(i)));
-                break;
-            }
+            if (shape_get_type(i) == LINE) {
+              strcpy(icolor, calc_complementary(shape_get_color(i)));
+            } else strcpy(icolor, shape_get_color(i));
 
-            switch (shape_get_type(j)) {
-              case CIRCLE:
-                circle_set_border_color(shape_as_circle(j), icolor);
-                break;
-              case RECTANGLE:
-                rect_set_border_color(shape_as_rectangle(j), icolor);
-                break;
-              case TEXT:
-                text_set_border_color(shape_as_text(j), icolor);
-                break;
-              case LINE:
-                free(icolor);
-                shape_swap_colors(j);
-                break;
-            }
-            
+            shape_set_border_color(j, icolor);
+
             shape_t *iclone = shape_clone(i, ++highest_id);
+            shape_swap_colors(iclone);
 
             queue_enqueue(ground, ni);
             queue_enqueue(ground, nj);
@@ -282,26 +247,18 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
             fprintf(txt, "I (id %zu) v J (id %zu) - Sobreposição - I > J\n", i_id, j_id);
 
             cloned_shapes++;
-          } else {
-            // Caso: I = J
-            queue_enqueue(ground, ni);
-            queue_enqueue(ground, nj);
-            
-            fprintf(txt, "I (id %zu) v J (id %zu) - Sobreposição - I = J\n", i_id, j_id);
           }
-
         } else {
           // Caso: sem sobreposição
           queue_enqueue(ground, ni);
           queue_enqueue(ground, nj);
-          
+
           fprintf(txt, "I (id %zu) v J (id %zu) - Sem sobreposição\n", i_id, j_id);
         }
       }
 
       size_t arena_len = queue_get_length(arena);
       for (size_t i = 0; i < arena_len; i++) {
-        printf("adicionado direto.\n");
         queue_enqueue(ground, queue_dequeue(arena));
       }
 
@@ -389,8 +346,6 @@ void txt_print_shape(FILE *txt, shape_t *shape) {
 
 launcher_t *get_ln_from_ll_by_id(llist_t *ll, size_t id) {
   size_t len = llist_get_length(ll);
-  printf("launchers len: %zu\n", len);
-  printf("searching for id: %zu\n", id);
 
   for (size_t i = 0; i < len; i++) {
     node_t *node = llist_getat_index(ll, i);
@@ -403,8 +358,6 @@ launcher_t *get_ln_from_ll_by_id(llist_t *ll, size_t id) {
 
 loader_t *get_ld_from_ll_by_id(llist_t *ll, size_t id) {
   size_t len = llist_get_length(ll);
-  printf("loaderes len: %zu\n", len);
-  printf("searching for id: %zu\n", id);
 
   for (size_t i = 0; i < len; i++) {
     node_t *node = llist_getat_index(ll, i);
@@ -412,5 +365,7 @@ loader_t *get_ld_from_ll_by_id(llist_t *ll, size_t id) {
     if (ld_get_id(loader) == id) return loader;
   }
 
-  return NULL;
+  loader_t *newld = ld_init(id);
+  llist_insertat_end(ll, node_init(newld, ld_destroy));
+  return newld;
 }

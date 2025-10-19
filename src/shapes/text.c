@@ -160,6 +160,8 @@ double text_get_area(text_t *text) {
 }
 
 text_t *text_clone(text_t *text, size_t id) {
+  if (text == NULL) return NULL;
+
   char *anchor = malloc(strlen(text->anchor) + 1);
   char *color = malloc(8);
   char *border_color = malloc(8);
@@ -185,6 +187,8 @@ text_t *text_clone(text_t *text, size_t id) {
 }
 
 line_t *text_line_collision(text_t *text) {
+  if (text == NULL) return NULL;
+
   size_t len = strlen(text->content);
   size_t cl = 10 * len;
 
@@ -210,6 +214,8 @@ line_t *text_line_collision(text_t *text) {
 }
 
 void text_swap_colors(text_t *text) {
+  if (text == NULL) return;
+
   char *color = text->color;
   char *border_color = text->border_color;
 

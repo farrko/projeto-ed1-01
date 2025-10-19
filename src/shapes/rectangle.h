@@ -131,8 +131,20 @@ char *rect_get_border_color(rectangle_t *rect);
   */
 double rect_get_area(rectangle_t *rect);
 
+/** @brief    Cria uma cópia de um retângulo com um novo identificador.
+  *
+  * @param    rect   Uma instância de retângulo a ser clonada.
+  * @param    id     Novo identificador para o retângulo clonado.
+  *
+  * @return   Uma nova instância de retângulo, idêntica à original, mas com o novo ID.
+  * @warning  Em caso de erro na alocação de memória, o programa será encerrado.
+  */
 rectangle_t *rect_clone(rectangle_t *rect, size_t id);
 
+/** @brief    Troca entre si as cores de preenchimento e de borda de um retângulo.
+  *
+  * @param    rect   Uma instância de retângulo.
+  */
 void rect_swap_colors(rectangle_t *rect);
 
 #endif

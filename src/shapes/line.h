@@ -119,6 +119,14 @@ char *line_get_color(line_t *line);
   */
 double line_get_area(line_t *line);
 
+/** @brief    Cria uma cópia de uma linha com um novo identificador.
+  *
+  * @param    line    Uma instância de linha a ser clonada.
+  * @param    id      Novo identificador para a linha clonada.
+  *
+  * @return   Uma nova instância de linha, idêntica à original, mas com o novo ID.
+  * @warning  Em caso de erro na alocação de memória, o programa será encerrado.
+  */
 line_t *line_clone(line_t *line, size_t id);
 
 #endif

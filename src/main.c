@@ -1,69 +1,98 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "datast/linkedlist.h"
 #include "datast/queue.h"
 #include "files/geo.h"
-#include "shapes/shapes.h"
 #include "files/svg.h"
 #include "files/qry.h"
 
-int main() {
+int main(int argc, char **argv) {
+  char *base_dir = NULL;
+  char *geopath = NULL;
+  char *out_dir = NULL;
+  char *qrypath = NULL;
+
+  for (int i = 0; i < argc; i++) {
+    if (strcmp(argv[i], "-e") == 0) {
+      base_dir = argv[i + 1];
+    }
+
+    if (strcmp(argv[i], "-f") == 0) {
+      geopath = argv[i + 1];
+    }
+
+    if (strcmp(argv[i], "-o") == 0) {
+      out_dir = argv[i + 1];
+    }
+
+    if (strcmp(argv[i], "-q") == 0) {
+      qrypath = argv[i + 1];
+    }
+  }
+
+  if (base_dir != NULL) {
+    if (base_dir[strlen(base_dir) - 1] == '/') base_dir[strlen(base_dir) - 1] = '\0';
+  }
+
+  if (out_dir != NULL) {
+    if (out_dir[strlen(out_dir) - 1] == '/') out_dir[strlen(out_dir) - 1] = '\0';
+  }
+
+  char *geo_name = malloc(strlen(geopath) - 3);
+  strncpy(geo_name, geopath, strlen(geopath) - 4);
+
+  char *full_geopath = malloc(128);
+  if (base_dir != NULL) {
+    sprintf(full_geopath, "%s/%s", base_dir, geopath);
+  } else strcpy(full_geopath, geopath);
+
   queue_t *ground = queue_init();
+  size_t highest_id = geo_processing(full_geopath, ground);
+  
+  char *geosvg_path = malloc(128);
+  sprintf(geosvg_path, "%s/%s.svg", out_dir, geo_name);
 
-  size_t highest_id = geo_processing("./t-2figs-alet.geo", ground);
-  svg_t *preqry_svg = svg_init("./pre-qry.svg");
+  svg_t *geosvg = svg_init(geosvg_path);
+  svg_write_queue(geosvg, ground);
+  svg_close(geosvg);
 
-  for (size_t i = 0; i < queue_get_length(ground); i++) {
-    node_t *current = queue_dequeue(ground);
-    shape_t *shape = (shape_t *) node_getvalue(current);
+  if (qrypath == NULL) {
+    free(geo_name);
+    free(full_geopath);
+    free(geosvg_path);
 
-    switch (shape_get_type(shape)) {
-      case CIRCLE:
-        svg_write_circle(preqry_svg, shape_as_circle(shape));
-        break;
-      case RECTANGLE:
-        svg_write_rectangle(preqry_svg, shape_as_rectangle(shape));
-        break;
-      case LINE:
-        svg_write_line(preqry_svg, shape_as_line(shape));
-        break;
-      case TEXT:
-        svg_write_text(preqry_svg, shape_as_text(shape));
-        break;
-    }
-
-    queue_enqueue(ground, current);
+    queue_destroy(ground);
+    exit(0);
   }
-  svg_close(preqry_svg);
 
-  qry_processing("./d2-1x1-norte.qry", "test.txt", ground, highest_id);
+  char *full_qrypath = malloc(128);
+  if (base_dir != NULL) {
+    sprintf(full_qrypath, "%s/%s", base_dir, qrypath);
+  } else strcpy(full_qrypath, qrypath);
 
-  svg_t *postqry_svg = svg_init("./post-qry.svg");
+  char *qry_name = malloc(strlen(qrypath) - 3);
+  strncpy(qry_name, qrypath, strlen(qrypath) - 4);
 
-  for (size_t i = 0; i < queue_get_length(ground); i++) {
-    node_t *current = queue_dequeue(ground);
-    shape_t *shape = (shape_t *) node_getvalue(current);
+  char *outpath_svg = malloc(128);
+  char *outpath_txt = malloc(128);
+  sprintf(outpath_svg, "%s/%s-%s.svg", out_dir, geo_name, qry_name);
+  sprintf(outpath_txt, "%s/%s-%s.txt", out_dir, geo_name, qry_name);
 
-    switch (shape_get_type(shape)) {
-      case CIRCLE:
-        svg_write_circle(postqry_svg, shape_as_circle(shape));
-        break;
-      case RECTANGLE:
-        svg_write_rectangle(postqry_svg, shape_as_rectangle(shape));
-        break;
-      case LINE:
-        svg_write_line(postqry_svg, shape_as_line(shape));
-        break;
-      case TEXT:
-        printf("adicionado texto\n");
-        svg_write_text(postqry_svg, shape_as_text(shape));
-        break;
-    }
+  qry_processing(full_qrypath,  outpath_txt, ground, highest_id);
 
-    queue_enqueue(ground, current);
-  }
-  svg_close(postqry_svg);
+  svg_t *qrysvg = svg_init(outpath_svg);
+  svg_write_queue(qrysvg, ground);
+  svg_close(qrysvg);
+
+  free(geo_name);
+  free(full_geopath);
+  free(geosvg_path);
+  free(full_qrypath);
+  free(qry_name);
+  free(outpath_svg);
+  free(outpath_txt);
 
   queue_destroy(ground);
 }

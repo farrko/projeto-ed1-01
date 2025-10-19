@@ -113,6 +113,8 @@ double rect_get_area(rectangle_t *rect) {
 }
 
 rectangle_t *rect_clone(rectangle_t *rect, size_t id) {
+  if (rect == NULL) return NULL;
+
   char *color = malloc(8);
   if (color == NULL) {
     printf("Erro na alocação de memória.\n");
@@ -132,6 +134,8 @@ rectangle_t *rect_clone(rectangle_t *rect, size_t id) {
 }
 
 void rect_swap_colors(rectangle_t *rect) {
+  if (rect == NULL) return;
+
   char *color = rect->color;
   char *border_color = rect->border_color;
 

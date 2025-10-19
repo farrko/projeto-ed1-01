@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -fstack-protector-all -I./src
+CFLAGS = -std=c99 -Wall -Wextra -fstack-protector-all -I.
 LDFLAGS = -lm
 
-SRC_DIR := src
+SRC_DIR := .
 BUILD_DIR := build
-BIN := bin
+BIN := ted
 
 SRC_FILES := $(shell find $(SRC_DIR) -name '*.c')
 

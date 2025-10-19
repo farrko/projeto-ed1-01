@@ -105,6 +105,8 @@ double line_get_area(line_t *line) {
 }
 
 line_t *line_clone(line_t *line, size_t id) {
+  if (line == NULL) return NULL;
+
   char *color = malloc(8);
   if (color == NULL) {
       printf("Erro na alocação de memória.\n");

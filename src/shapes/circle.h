@@ -116,8 +116,20 @@ char *circle_get_border_color(circle_t *circle);
   */
 double circle_get_area(circle_t *circle);
 
+/** @brief    Cria uma cópia de um círculo com um novo identificador.
+  *
+  * @param    circle   Uma instância de círculo a ser clonada.
+  * @param    id       Novo identificador para o círculo clonado.
+  *
+  * @return   Uma nova instância de círculo, idêntica à original, mas com o novo ID.
+  * @warning  Em caso de erro na alocação de memória, o programa será encerrado.
+  */
 circle_t *circle_clone(circle_t *circle, size_t id);
 
+/** @brief    Troca entre si as cores de preenchimento e de borda de um círculo.
+  *
+  * @param    circle   Uma instância de círculo.
+  */
 void circle_swap_colors(circle_t *circle);
 
 #endif
