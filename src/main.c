@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
 
   char *geo_name = malloc(strlen(geopath) - 3);
   strncpy(geo_name, geopath, strlen(geopath) - 4);
+  geo_name[strlen(geopath) - 4] = '\0';
 
   char *full_geopath = malloc(128);
   if (base_dir != NULL) {
@@ -74,6 +75,7 @@ int main(int argc, char **argv) {
 
   char *qry_name = malloc(strlen(qrypath) - 3);
   strncpy(qry_name, qrypath, strlen(qrypath) - 4);
+  qry_name[strlen(qrypath) - 4] = '\0';
 
   char *outpath_svg = malloc(128);
   char *outpath_txt = malloc(128);
