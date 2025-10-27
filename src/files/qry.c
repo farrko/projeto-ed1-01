@@ -53,14 +53,13 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
       sscanf(str, "%*s %zu %zu", &id, &amount);
       fprintf(txt, "lc %zu %zu\n", id, amount);
 
-      loader_t *loader = ld_init(id);
+      loader_t *loader = get_ld_from_ll_by_id(loaders, id);
+
       for (size_t i = 0; i < amount; i++) {
         node_t *node = queue_dequeue(ground);
         txt_print_shape(txt, (shape_t *) node_getvalue(node));
         ld_push(loader, node);
       }
-
-      llist_insertat_end(loaders, node_init(loader, ld_destroy));
 
       instructions++;
     }
@@ -152,9 +151,19 @@ void qry_processing(char *qrypath, char *txtpath, queue_t *ground, size_t highes
       if (side == 'e') {
         loader = ln_get_right_ld(launcher);
         len = ld_get_length(loader);
+
+        if (ln_get_loaded(launcher) != NULL) {
+          ld_push(ln_get_left_ld(launcher), ln_get_loaded(launcher));
+          ln_set_loaded(launcher, NULL);
+        }
       } else {
         loader = ln_get_left_ld(launcher);
         len = ld_get_length(loader);
+
+        if (ln_get_loaded(launcher) != NULL) {
+          ld_push(ln_get_right_ld(launcher), ln_get_loaded(launcher));
+          ln_set_loaded(launcher, NULL);
+        }
       }
 
       for (size_t i = 0; i < len; i++) {
